@@ -28,6 +28,18 @@ problem with a Robin (oxide/field-plate) boundary.
 | `biassweep.py` | depletion geometry vs drain bias |
 | `fp_sweep.py` | centerline depletion depth vs N_D for field-plate potential V_FP = -60..+60 V |
 | `breakdown_vs_depletion.py` | V_BD vs full-depletion threshold + depletion state at breakdown |
+| `fp_sweep.py` | centerline depletion depth vs N_D for field-plate potential V_FP = -60..+60 V |
+| `interface_charge.py` | V_BD vs N_D with signed Si/oxide interface charge |
+| `use_predictor.py` | fast V_BD estimates via the surrogate in `vbd_regression_package/` |
+
+## vbd_regression_package/
+
+A standalone 4-input (`Nd`, `tox`, `VFP`, `Nox`) polynomial+thin-plate-spline
+**surrogate** for V_BD on the fixed Family-1 geometry (L=1.6 um, a=0.5 um), built
+on the same Green-function centerline-avalanche physics. Cross-checked against the
+independent `vbd_vdm.py` solver (RMSE ~ 0.013 V; reference 47.604 V at Nd=3e16,
+tox=0.25 reproduced exactly). Fully-depleted model only; returns null outside the
+admissible branch. Run `python vbd_4input_predict.py --nd 3e16 --tox 0.25 --vfp 0 --nox 0`.
 
 Generated figures (`*.png`) are included. Requires Python with numpy, scipy, matplotlib.
 
