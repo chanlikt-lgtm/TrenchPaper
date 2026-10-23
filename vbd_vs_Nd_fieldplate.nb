@@ -1,0 +1,1605 @@
+(* Content-type: application/vnd.wolfram.cdf.text *)
+
+(*** Wolfram CDF File ***)
+(* http://www.wolfram.com/cdf *)
+
+(* CreatedBy='Wolfram 15.0' *)
+
+(*************************************************************************)
+(*                                                                       *)
+(*                                                                       *)
+(*  This file was created under the Wolfram Enterprise licensing terms.  *)
+(*                                                                       *)
+(*       For additional information concerning CDF licensing see:        *)
+(*                                                                       *)
+(*        www.wolfram.com/cdf/adopting-cdf/licensing-options.html        *)
+(*                                                                       *)
+(*                                                                       *)
+(*                                                                       *)
+(*************************************************************************)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[      1060,         20]
+NotebookDataLength[     62490,       1583]
+NotebookOptionsPosition[     61463,       1566]
+NotebookOutlinePosition[     61801,       1581]
+CellTagsIndexPosition[     61758,       1578]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell["\<\
+Trench MOSFET Drift Breakdown Voltage vs. Doping (Vbd vs. Nd)\
+\>", "Title",
+ FontFamily->"Helvetica",
+ FontSize->24,
+ FontColor->RGBColor[
+  0.043, 0.239, 0.125],ExpressionUUID->"8e6c92f2-a116-3843-8241-5df5584b533c"],
+
+Cell["\<\
+2D Finite-Difference Poisson Model under Field-Plate Potentials (-10V, 0V, \
++10V)
+Comparing Critical Electric Field (Ec = 3e5 V/cm) and Surface Ionization \
+Integral Criteria
+(Evaluate cells sequentially to execute simulations and render plots)\
+\>", "Subtitle",
+ FontFamily->"Helvetica",
+ FontSize->13,
+ FontColor->GrayLevel[
+  0.35],ExpressionUUID->"d5d4d2b8-d9d9-4c46-8fc6-c71af3850ff2"],
+
+Cell["\<\
+1. Physical Constants, Device Dimensions & Material Parameters\
+\>", "Section",
+ FontFamily->"Helvetica",
+ FontSize->17,
+ FontColor->RGBColor[
+  0.118, 0.494, 0.204],ExpressionUUID->"5e0d88a9-cc25-8b4f-a489-632c8915490e"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", 
+   RowBox[{"Physical", " ", "and", " ", "Material", " ", "Constants"}], " ", 
+   "*)"}], "\n", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"q", " ", "=", " ", "1.602176634*^-19"}], ";"}], "         ", 
+   RowBox[{"(*", " ", 
+    RowBox[{"Elementary", " ", 
+     RowBox[{"charge", " ", "[", "C", "]"}]}], " ", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{"eps0", " ", "=", " ", "8.8541878128*^-14"}], ";"}], "     ", 
+   RowBox[{"(*", " ", 
+    RowBox[{"Vacuum", " ", 
+     RowBox[{"permittivity", " ", "[", 
+      RowBox[{"F", "/", "cm"}], "]"}]}], " ", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{"epsS", " ", "=", " ", 
+     RowBox[{"11.7", " ", "*", " ", "eps0"}]}], ";"}], "           ", 
+   RowBox[{"(*", " ", 
+    RowBox[{"Permittivity", " ", "of", " ", 
+     RowBox[{"Silicon", " ", "[", 
+      RowBox[{"F", "/", "cm"}], "]"}]}], " ", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{"epsOx", " ", "=", " ", 
+     RowBox[{"3.9", " ", "*", " ", "eps0"}]}], ";"}], "           ", 
+   RowBox[{"(*", " ", 
+    RowBox[{"Permittivity", " ", "of", " ", 
+     RowBox[{"SiO2", " ", "[", 
+      RowBox[{"F", "/", "cm"}], "]"}]}], " ", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{"um", " ", "=", " ", 
+     RowBox[{"10", "^", 
+      RowBox[{"-", "4"}]}]}], ";"}], "                   ", 
+   RowBox[{"(*", " ", 
+    RowBox[{"1", " ", "um", " ", "in", " ", "cm"}], " ", "*)"}], "\n", "\n", 
+   RowBox[{"(*", " ", 
+    RowBox[{"Device", " ", "Dimensions"}], " ", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{"L", " ", "=", " ", 
+     RowBox[{"1.0", " ", "*", " ", "um"}]}], ";"}], "                 ", 
+   RowBox[{"(*", " ", 
+    RowBox[{"Drift", " ", "mesa", " ", 
+     RowBox[{"length", ":", " ", 
+      RowBox[{"1.0", " ", 
+       RowBox[{"um", " ", "[", "cm", "]"}]}]}]}], " ", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{"a", " ", "=", " ", 
+     RowBox[{"0.5", " ", "*", " ", "um"}]}], ";"}], "                 ", 
+   RowBox[{"(*", " ", 
+    RowBox[{"Half", "-", 
+     RowBox[{"mesa", " ", 
+      RowBox[{"width", ":", " ", 
+       RowBox[{"0.5", " ", 
+        RowBox[{"um", " ", "[", "cm", "]"}]}]}]}]}], " ", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{"tox", " ", "=", " ", 
+     RowBox[{"0.5", " ", "*", " ", "um"}]}], ";"}], "               ", 
+   RowBox[{"(*", " ", 
+    RowBox[{"Trench", " ", "oxide", " ", 
+     RowBox[{"thickness", ":", " ", 
+      RowBox[{"0.5", " ", 
+       RowBox[{"um", " ", "[", "cm", "]"}]}]}]}], " ", "*)"}], "\n", "\n", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+     RowBox[{"Robin", " ", "Oxide", " ", "Boundary", " ", 
+      RowBox[{"Parameter", ":", " ", "b"}]}], " ", "=", " ", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"epsS", " ", "/", " ", "epsOx"}], ")"}], " ", "*", " ", 
+      "tox"}]}], " ", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{"bRobin", " ", "=", " ", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"epsS", " ", "/", " ", "epsOx"}], ")"}], " ", "*", " ", 
+      "tox"}]}], ";"}], "\n", "\n", 
+   RowBox[{"(*", " ", 
+    RowBox[{"Breakdown", " ", "Model", " ", "Parameters"}], " ", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{"EcSi", " ", "=", " ", "3.0*^5"}], ";"}], "                ", 
+   RowBox[{"(*", " ", 
+    RowBox[{"Critical", " ", "field", " ", "in", " ", 
+     RowBox[{"Silicon", " ", "[", 
+      RowBox[{"V", "/", "cm"}], "]"}]}], " ", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{"aSi", " ", "=", " ", "7.03*^5"}], ";"}], "                ", 
+   RowBox[{"(*", " ", 
+    RowBox[{"Chynoweth", " ", "ionization", " ", "coefficient", " ", 
+     RowBox[{"a", " ", "[", 
+      RowBox[{"cm", "^", 
+       RowBox[{"-", "1"}]}], "]"}]}], " ", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{"bSi", " ", "=", " ", "1.231*^6"}], ";"}], "               ", 
+   RowBox[{"(*", " ", 
+    RowBox[{"Chynoweth", " ", "ionization", " ", "coefficient", " ", 
+     RowBox[{"b", " ", "[", 
+      RowBox[{"V", "/", "cm"}], "]"}]}], " ", "*)"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{"Print", "[", "\"\<Device Dimensions & Parameters:\>\"", "]"}], 
+    ";"}], "\n", 
+   RowBox[{
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<  Drift length L = \>\"", ",", " ", 
+      RowBox[{"L", "/", "um"}], ",", " ", "\"\< \[Mu]m\>\""}], "]"}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<  Half-cell width a = \>\"", ",", " ", 
+      RowBox[{"a", "/", "um"}], ",", " ", "\"\< \[Mu]m\>\""}], "]"}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<  Oxide thickness tox = \>\"", ",", " ", 
+      RowBox[{"tox", "/", "um"}], ",", " ", "\"\< \[Mu]m\>\""}], "]"}], ";"}],
+    "\n", 
+   RowBox[{
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<  Robin boundary parameter b = \>\"", ",", " ", 
+      RowBox[{"NumberForm", "[", 
+       RowBox[{
+        RowBox[{"bRobin", "/", "um"}], ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"6", ",", " ", "3"}], "}"}]}], "]"}], ",", 
+      " ", "\"\< \[Mu]m\>\""}], "]"}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<  Critical field Ec = \>\"", ",", " ", 
+      RowBox[{"ScientificForm", "[", 
+       RowBox[{"EcSi", ",", " ", "3"}], "]"}], ",", " ", "\"\< V/cm\>\""}], 
+     "]"}], ";"}]}]}]], "Input",ExpressionUUID->"8dd1a15d-d0db-8940-90d8-\
+a9801435ba6e"],
+
+Cell["2. GreenPink Color Palette & Styling", "Section",
+ FontFamily->"Helvetica",
+ FontSize->17,
+ FontColor->RGBColor[
+  0.118, 0.494, 0.204],ExpressionUUID->"fc61f7c7-1a5c-7a4c-84d5-fbb5212c74e9"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{"Custom", " ", "multi"}], "-", 
+    RowBox[{"stop", " ", "GreenPink", " ", "color", " ", "palette"}]}], " ", 
+   "*)"}], "\n", 
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{"greenPinkCol", "[", "t_", "]"}], " ", ":=", " ", 
+     RowBox[{"Blend", "[", 
+      RowBox[{
+       RowBox[{"{", "\n", "  ", 
+        RowBox[{
+         RowBox[{"RGBColor", "[", 
+          RowBox[{"0.043", ",", " ", "0.239", ",", " ", "0.125"}], "]"}], ",",
+          " ", 
+         RowBox[{"(*", " ", 
+          RowBox[{"deep", " ", "forest", " ", "green"}], " ", "*)"}], "\n", 
+         "  ", 
+         RowBox[{"RGBColor", "[", 
+          RowBox[{"0.118", ",", " ", "0.494", ",", " ", "0.204"}], "]"}], ",",
+          " ", 
+         RowBox[{"(*", " ", 
+          RowBox[{"rich", " ", "emerald"}], " ", "*)"}], "\n", "  ", 
+         RowBox[{"RGBColor", "[", 
+          RowBox[{"0.322", ",", " ", "0.718", ",", " ", "0.533"}], "]"}], ",",
+          " ", 
+         RowBox[{"(*", " ", 
+          RowBox[{"vibrant", " ", "green"}], " ", "*)"}], "\n", "  ", 
+         RowBox[{"RGBColor", "[", 
+          RowBox[{"0.718", ",", " ", "0.894", ",", " ", "0.780"}], "]"}], ",",
+          " ", 
+         RowBox[{"(*", " ", 
+          RowBox[{"soft", " ", "mint"}], " ", "*)"}], "\n", "  ", 
+         RowBox[{"RGBColor", "[", 
+          RowBox[{"0.992", ",", " ", "0.886", ",", " ", "0.894"}], "]"}], ",",
+          " ", 
+         RowBox[{"(*", " ", 
+          RowBox[{"pale", " ", "blush"}], " ", "*)"}], "\n", "  ", 
+         RowBox[{"RGBColor", "[", 
+          RowBox[{"0.957", ",", " ", "0.447", ",", " ", "0.714"}], "]"}], ",",
+          " ", 
+         RowBox[{"(*", " ", 
+          RowBox[{"vibrant", " ", "pink"}], " ", "*)"}], "\n", "  ", 
+         RowBox[{"RGBColor", "[", 
+          RowBox[{"0.851", ",", " ", "0.275", ",", " ", "0.937"}], "]"}], ",",
+          " ", 
+         RowBox[{"(*", " ", "magenta", " ", "*)"}], "\n", "  ", 
+         RowBox[{"RGBColor", "[", 
+          RowBox[{"0.290", ",", " ", "0.016", ",", " ", "0.306"}], "]"}]}], 
+        "  ", 
+        RowBox[{"(*", " ", 
+         RowBox[{"deep", " ", "plum"}], " ", "*)"}], "\n", "}"}], ",", " ", 
+       RowBox[{"Clip", "[", 
+        RowBox[{"t", ",", " ", 
+         RowBox[{"{", 
+          RowBox[{"0", ",", " ", "1"}], "}"}]}], "]"}]}], "]"}]}], ";"}], 
+   "\n", "\n", 
+   RowBox[{
+    RowBox[{"colForest", " ", "=", " ", 
+     RowBox[{"RGBColor", "[", 
+      RowBox[{"0.043", ",", " ", "0.239", ",", " ", "0.125"}], "]"}]}], ";"}],
+    "\n", 
+   RowBox[{
+    RowBox[{"colDeepGreen", " ", "=", " ", 
+     RowBox[{"RGBColor", "[", 
+      RowBox[{"0.118", ",", " ", "0.494", ",", " ", "0.204"}], "]"}]}], ";"}],
+    "\n", 
+   RowBox[{
+    RowBox[{"colMint", " ", "=", " ", 
+     RowBox[{"RGBColor", "[", 
+      RowBox[{"0.322", ",", " ", "0.718", ",", " ", "0.533"}], "]"}]}], ";"}],
+    "\n", 
+   RowBox[{
+    RowBox[{"colVibrantPink", " ", "=", " ", 
+     RowBox[{"RGBColor", "[", 
+      RowBox[{"0.851", ",", " ", "0.275", ",", " ", "0.937"}], "]"}]}], ";"}],
+    "\n", 
+   RowBox[{
+    RowBox[{"colPlum", " ", "=", " ", 
+     RowBox[{"RGBColor", "[", 
+      RowBox[{"0.290", ",", " ", "0.016", ",", " ", "0.306"}], "]"}]}], ";"}],
+    "\n", 
+   RowBox[{
+    RowBox[{"colOrange", " ", "=", " ", 
+     RowBox[{"RGBColor", "[", 
+      RowBox[{"0.969", ",", " ", "0.573", ",", " ", "0.337"}], "]"}]}], ";"}],
+    "\n", 
+   RowBox[{
+    RowBox[{"colTeal", " ", "=", " ", 
+     RowBox[{"RGBColor", "[", 
+      RowBox[{"0.0", ",", " ", "0.5", ",", " ", "0.5"}], "]"}]}], 
+    ";"}]}]}]], "Input",ExpressionUUID->"14144caa-3c40-2345-b956-\
+96779afe8d43"],
+
+Cell["3. 2D Finite Difference Poisson Basis Assembly", "Section",
+ FontFamily->"Helvetica",
+ FontSize->17,
+ FontColor->RGBColor[
+  0.118, 0.494, 0.204],ExpressionUUID->"1945df26-a577-fc4e-840a-146937a41bd7"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{"Mesh", " ", 
+     RowBox[{"Discretization", ":", " ", 
+      RowBox[{"Nx", " ", "along", " ", "x", " ", 
+       RowBox[{"(", "drift", ")"}]}]}]}], ",", " ", 
+    RowBox[{"Ny", " ", "along", " ", "y", " ", 
+     RowBox[{"(", 
+      RowBox[{"mesa", " ", "thickness"}], ")"}]}]}], " ", "*)"}], "\n", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"nx", " ", "=", " ", "100"}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"ny", " ", "=", " ", "50"}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"dx", " ", "=", " ", 
+     RowBox[{"L", " ", "/", " ", 
+      RowBox[{"(", 
+       RowBox[{"nx", " ", "-", " ", "1"}], ")"}]}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"dy", " ", "=", " ", 
+     RowBox[{"a", " ", "/", " ", 
+      RowBox[{"(", 
+       RowBox[{"ny", " ", "-", " ", "1"}], ")"}]}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"Ntotal", " ", "=", " ", 
+     RowBox[{"nx", " ", "*", " ", "ny"}]}], ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"kIdx", "[", 
+      RowBox[{"i_", ",", " ", "j_"}], "]"}], " ", ":=", " ", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"i", " ", "-", " ", "1"}], ")"}], " ", "*", " ", "ny"}], " ", 
+      "+", " ", "j"}]}], ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<Assembling 2D Sparse Poisson Matrix on \>\"", ",", " ", 
+      "nx", ",", " ", "\"\< x \>\"", ",", " ", "ny", ",", 
+      " ", "\"\< grid (\>\"", ",", " ", "Ntotal", ",", 
+      " ", "\"\< nodes)...\>\""}], "]"}], ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{"rules", " ", "=", " ", 
+     RowBox[{"{", "}"}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"bCharge", " ", "=", " ", 
+     RowBox[{"ConstantArray", "[", 
+      RowBox[{"0.0", ",", " ", "Ntotal"}], "]"}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"bDrain", " ", "=", " ", 
+     RowBox[{"ConstantArray", "[", 
+      RowBox[{"0.0", ",", " ", "Ntotal"}], "]"}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"bFP", " ", "=", " ", 
+     RowBox[{"ConstantArray", "[", 
+      RowBox[{"0.0", ",", " ", "Ntotal"}], "]"}]}], ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{"Do", "[", "\n", "  ", 
+     RowBox[{
+      RowBox[{"Do", "[", "\n", "    ", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"k", " ", "=", " ", 
+          RowBox[{"kIdx", "[", 
+           RowBox[{"i", ",", " ", "j"}], "]"}]}], ";", "\n", "    ", 
+         RowBox[{"Which", "[", "\n", "      ", 
+          RowBox[{"(*", " ", 
+           RowBox[{
+            RowBox[{"Source", " ", 
+             RowBox[{"contact", ":", " ", "x"}]}], " ", "=", " ", 
+            RowBox[{
+             RowBox[{"0", " ", "->", " ", "phi"}], " ", "=", " ", "0"}]}], 
+           " ", "*)"}], "\n", "      ", 
+          RowBox[{
+           RowBox[{"i", " ", "==", " ", "1"}], ",", "\n", "      ", 
+           RowBox[{"AppendTo", "[", 
+            RowBox[{"rules", ",", " ", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{"k", ",", " ", "k"}], "}"}], " ", "->", " ", "1.0"}]}],
+             "]"}], ",", "\n", "      ", "\n", "      ", 
+           RowBox[{"(*", " ", 
+            RowBox[{
+             RowBox[{"Drain", " ", 
+              RowBox[{"contact", ":", " ", "x"}]}], " ", "=", " ", 
+             RowBox[{
+              RowBox[{"L", " ", "->", " ", "phi"}], " ", "=", " ", 
+              "Vdrain"}]}], " ", "*)"}], "\n", "      ", 
+           RowBox[{"i", " ", "==", " ", "nx"}], ",", "\n", "      ", 
+           RowBox[{
+            RowBox[{"AppendTo", "[", 
+             RowBox[{"rules", ",", " ", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{"k", ",", " ", "k"}], "}"}], " ", "->", " ", 
+               "1.0"}]}], "]"}], ";", "\n", "      ", 
+            RowBox[{
+             RowBox[{"bDrain", "[", 
+              RowBox[{"[", "k", "]"}], "]"}], " ", "=", " ", "1.0"}]}], ",", 
+           "\n", "      ", "\n", "      ", 
+           RowBox[{"(*", " ", 
+            RowBox[{
+             RowBox[{"Trench", " ", "oxide", " ", 
+              RowBox[{"interface", ":", " ", "y"}]}], " ", "=", " ", 
+             RowBox[{
+              RowBox[{"a", " ", "->", " ", 
+               RowBox[{"phi", " ", "+", " ", 
+                RowBox[{"b", " ", "*", " ", 
+                 RowBox[{"dphi", "/", "dy"}]}]}]}], " ", "=", " ", "V_FP"}]}],
+             " ", "*)"}], "\n", "      ", 
+           RowBox[{"j", " ", "==", " ", "ny"}], ",", "\n", "      ", 
+           RowBox[{
+            RowBox[{"AppendTo", "[", 
+             RowBox[{"rules", ",", " ", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{"k", ",", " ", "k"}], "}"}], " ", "->", " ", 
+               RowBox[{"1.0", " ", "+", " ", 
+                RowBox[{"bRobin", "/", "dy"}]}]}]}], "]"}], ";", "\n", 
+            "      ", 
+            RowBox[{"AppendTo", "[", 
+             RowBox[{"rules", ",", " ", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{"k", ",", " ", 
+                 RowBox[{"kIdx", "[", 
+                  RowBox[{"i", ",", " ", 
+                   RowBox[{"j", " ", "-", " ", "1"}]}], "]"}]}], "}"}], " ", "->",
+                " ", 
+               RowBox[{
+                RowBox[{"-", "bRobin"}], "/", "dy"}]}]}], "]"}], ";", "\n", 
+            "      ", 
+            RowBox[{
+             RowBox[{"bFP", "[", 
+              RowBox[{"[", "k", "]"}], "]"}], " ", "=", " ", "1.0"}]}], ",", 
+           "\n", "      ", "\n", "      ", 
+           RowBox[{"(*", " ", 
+            RowBox[{
+             RowBox[{"Centerline", " ", 
+              RowBox[{"symmetry", ":", " ", "y"}]}], " ", "=", " ", 
+             RowBox[{
+              RowBox[{"0", " ", "->", " ", 
+               RowBox[{"dphi", "/", "dy"}]}], " ", "=", " ", "0"}]}], " ", 
+            "*)"}], "\n", "      ", 
+           RowBox[{"j", " ", "==", " ", "1"}], ",", "\n", "      ", 
+           RowBox[{
+            RowBox[{"AppendTo", "[", 
+             RowBox[{"rules", ",", " ", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{"k", ",", " ", "k"}], "}"}], " ", "->", " ", 
+               "1.0"}]}], "]"}], ";", "\n", "      ", 
+            RowBox[{"AppendTo", "[", 
+             RowBox[{"rules", ",", " ", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{"k", ",", " ", 
+                 RowBox[{"kIdx", "[", 
+                  RowBox[{"i", ",", " ", "2"}], "]"}]}], "}"}], " ", "->", 
+               " ", 
+               RowBox[{"-", "1.0"}]}]}], "]"}]}], ",", "\n", "      ", "\n", 
+           "      ", 
+           RowBox[{"(*", " ", 
+            RowBox[{
+             RowBox[{"Interior", " ", "Poisson", " ", 
+              RowBox[{"Equation", ":", " ", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{"d", "^", "2"}], 
+                 RowBox[{"phi", "/", 
+                  RowBox[{"dx", "^", "2"}]}]}], " ", "+", " ", 
+                RowBox[{
+                 RowBox[{"d", "^", "2"}], 
+                 RowBox[{"phi", "/", 
+                  RowBox[{"dy", "^", "2"}]}]}]}]}]}], " ", "=", " ", 
+             RowBox[{
+              RowBox[{"-", "rho"}], "/", "epsS"}]}], " ", "*)"}], "\n", 
+           "      ", "True", ",", "\n", "      ", 
+           RowBox[{
+            RowBox[{"AppendTo", "[", 
+             RowBox[{"rules", ",", " ", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{"k", ",", " ", "k"}], "}"}], " ", "->", " ", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{"-", "2.0"}], "/", 
+                 RowBox[{"dx", "^", "2"}]}], " ", "-", " ", 
+                RowBox[{"2.0", "/", 
+                 RowBox[{"dy", "^", "2"}]}]}]}]}], "]"}], ";", "\n", "      ", 
+            RowBox[{"AppendTo", "[", 
+             RowBox[{"rules", ",", " ", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{"k", ",", " ", 
+                 RowBox[{"kIdx", "[", 
+                  RowBox[{
+                   RowBox[{"i", " ", "-", " ", "1"}], ",", " ", "j"}], 
+                  "]"}]}], "}"}], " ", "->", " ", 
+               RowBox[{"1.0", "/", 
+                RowBox[{"dx", "^", "2"}]}]}]}], "]"}], ";", "\n", "      ", 
+            RowBox[{"AppendTo", "[", 
+             RowBox[{"rules", ",", " ", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{"k", ",", " ", 
+                 RowBox[{"kIdx", "[", 
+                  RowBox[{
+                   RowBox[{"i", " ", "+", " ", "1"}], ",", " ", "j"}], 
+                  "]"}]}], "}"}], " ", "->", " ", 
+               RowBox[{"1.0", "/", 
+                RowBox[{"dx", "^", "2"}]}]}]}], "]"}], ";", "\n", "      ", 
+            RowBox[{"AppendTo", "[", 
+             RowBox[{"rules", ",", " ", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{"k", ",", " ", 
+                 RowBox[{"kIdx", "[", 
+                  RowBox[{"i", ",", " ", 
+                   RowBox[{"j", " ", "-", " ", "1"}]}], "]"}]}], "}"}], " ", "->",
+                " ", 
+               RowBox[{"1.0", "/", 
+                RowBox[{"dy", "^", "2"}]}]}]}], "]"}], ";", "\n", "      ", 
+            RowBox[{"AppendTo", "[", 
+             RowBox[{"rules", ",", " ", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{"k", ",", " ", 
+                 RowBox[{"kIdx", "[", 
+                  RowBox[{"i", ",", " ", 
+                   RowBox[{"j", " ", "+", " ", "1"}]}], "]"}]}], "}"}], " ", "->",
+                " ", 
+               RowBox[{"1.0", "/", 
+                RowBox[{"dy", "^", "2"}]}]}]}], "]"}], ";", "\n", "      ", 
+            RowBox[{
+             RowBox[{"bCharge", "[", 
+              RowBox[{"[", "k", "]"}], "]"}], " ", "=", " ", 
+             RowBox[{
+              RowBox[{"-", "q"}], " ", "/", " ", "epsS"}]}]}]}], "\n", "    ",
+           "]"}]}], ",", "\n", "    ", 
+        RowBox[{"{", 
+         RowBox[{"j", ",", " ", "1", ",", " ", "ny"}], "}"}]}], "\n", "  ", 
+       "]"}], ",", "\n", "  ", 
+      RowBox[{"{", 
+       RowBox[{"i", ",", " ", "1", ",", " ", "nx"}], "}"}]}], "\n", "]"}], 
+    ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{"spA", " ", "=", " ", 
+     RowBox[{"SparseArray", "[", 
+      RowBox[{"rules", ",", " ", 
+       RowBox[{"{", 
+        RowBox[{"Ntotal", ",", " ", "Ntotal"}], "}"}]}], "]"}]}], ";"}], "\n",
+    "\n", 
+   RowBox[{
+    RowBox[{
+    "Print", "[", "\"\<Solving linear systems for basis potentials (Charge, \
+Drain, Field-Plate)...\>\"", "]"}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"phiCharge", " ", "=", " ", 
+     RowBox[{"Partition", "[", 
+      RowBox[{
+       RowBox[{"LinearSolve", "[", 
+        RowBox[{"spA", ",", " ", "bCharge"}], "]"}], ",", " ", "ny"}], 
+      "]"}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"phiDrain", " ", "=", " ", 
+     RowBox[{"Partition", "[", 
+      RowBox[{
+       RowBox[{"LinearSolve", "[", 
+        RowBox[{"spA", ",", " ", "bDrain"}], "]"}], ",", " ", "ny"}], "]"}]}],
+     ";"}], "\n", 
+   RowBox[{
+    RowBox[{"phiFP", " ", "=", " ", 
+     RowBox[{"Partition", "[", 
+      RowBox[{
+       RowBox[{"LinearSolve", "[", 
+        RowBox[{"spA", ",", " ", "bFP"}], "]"}], ",", " ", "ny"}], "]"}]}], 
+    ";"}], "\n", 
+   RowBox[{
+    RowBox[{
+    "Print", "[", "\"\<Basis potentials solved successfully!\>\"", "]"}], 
+    ";"}]}]}]], "Input",ExpressionUUID->"c6b69d57-7a78-9743-85a1-\
+1ee808c0ed9d"],
+
+Cell["4. Electric Field Gradients and Breakdown Criteria", "Section",
+ FontFamily->"Helvetica",
+ FontSize->17,
+ FontColor->RGBColor[
+  0.118, 0.494, 0.204],ExpressionUUID->"debb227e-29f3-144c-90b0-1e83c18ef50e"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", 
+   RowBox[{
+   "Finite", " ", "Difference", " ", "Spatial", " ", "Gradient", " ", 
+    "Functions"}], " ", "*)"}], "\n", 
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{"gradX", "[", "m_", "]"}], " ", ":=", " ", 
+     RowBox[{"Table", "[", "\n", "  ", 
+      RowBox[{
+       RowBox[{"Which", "[", "\n", "    ", 
+        RowBox[{
+         RowBox[{"i", " ", "==", " ", "1"}], ",", " ", 
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"m", "[", 
+             RowBox[{"[", 
+              RowBox[{"2", ",", " ", "j"}], "]"}], "]"}], " ", "-", " ", 
+            RowBox[{"m", "[", 
+             RowBox[{"[", 
+              RowBox[{"1", ",", " ", "j"}], "]"}], "]"}]}], ")"}], " ", "/", 
+          " ", "dx"}], ",", "\n", "    ", 
+         RowBox[{"i", " ", "==", " ", "nx"}], ",", " ", 
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"m", "[", 
+             RowBox[{"[", 
+              RowBox[{"nx", ",", " ", "j"}], "]"}], "]"}], " ", "-", " ", 
+            RowBox[{"m", "[", 
+             RowBox[{"[", 
+              RowBox[{
+               RowBox[{"nx", " ", "-", " ", "1"}], ",", " ", "j"}], "]"}], 
+             "]"}]}], ")"}], " ", "/", " ", "dx"}], ",", "\n", "    ", "True",
+          ",", " ", 
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"m", "[", 
+             RowBox[{"[", 
+              RowBox[{
+               RowBox[{"i", " ", "+", " ", "1"}], ",", " ", "j"}], "]"}], 
+             "]"}], " ", "-", " ", 
+            RowBox[{"m", "[", 
+             RowBox[{"[", 
+              RowBox[{
+               RowBox[{"i", " ", "-", " ", "1"}], ",", " ", "j"}], "]"}], 
+             "]"}]}], ")"}], " ", "/", " ", 
+          RowBox[{"(", 
+           RowBox[{"2.0", " ", "*", " ", "dx"}], ")"}]}]}], "\n", "  ", "]"}],
+        ",", "\n", "  ", 
+       RowBox[{"{", 
+        RowBox[{"i", ",", " ", "1", ",", " ", "nx"}], "}"}], ",", " ", 
+       RowBox[{"{", 
+        RowBox[{"j", ",", " ", "1", ",", " ", "ny"}], "}"}]}], "\n", "]"}]}], 
+    ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"gradY", "[", "m_", "]"}], " ", ":=", " ", 
+     RowBox[{"Table", "[", "\n", "  ", 
+      RowBox[{
+       RowBox[{"Which", "[", "\n", "    ", 
+        RowBox[{
+         RowBox[{"j", " ", "==", " ", "1"}], ",", " ", 
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"m", "[", 
+             RowBox[{"[", 
+              RowBox[{"i", ",", " ", "2"}], "]"}], "]"}], " ", "-", " ", 
+            RowBox[{"m", "[", 
+             RowBox[{"[", 
+              RowBox[{"i", ",", " ", "1"}], "]"}], "]"}]}], ")"}], " ", "/", 
+          " ", "dy"}], ",", "\n", "    ", 
+         RowBox[{"j", " ", "==", " ", "ny"}], ",", " ", 
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"m", "[", 
+             RowBox[{"[", 
+              RowBox[{"i", ",", " ", "ny"}], "]"}], "]"}], " ", "-", " ", 
+            RowBox[{"m", "[", 
+             RowBox[{"[", 
+              RowBox[{"i", ",", " ", 
+               RowBox[{"ny", " ", "-", " ", "1"}]}], "]"}], "]"}]}], ")"}], 
+          " ", "/", " ", "dy"}], ",", "\n", "    ", "True", ",", " ", 
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"m", "[", 
+             RowBox[{"[", 
+              RowBox[{"i", ",", " ", 
+               RowBox[{"j", " ", "+", " ", "1"}]}], "]"}], "]"}], " ", "-", 
+            " ", 
+            RowBox[{"m", "[", 
+             RowBox[{"[", 
+              RowBox[{"i", ",", " ", 
+               RowBox[{"j", " ", "-", " ", "1"}]}], "]"}], "]"}]}], ")"}], 
+          " ", "/", " ", 
+          RowBox[{"(", 
+           RowBox[{"2.0", " ", "*", " ", "dy"}], ")"}]}]}], "\n", "  ", "]"}],
+        ",", "\n", "  ", 
+       RowBox[{"{", 
+        RowBox[{"i", ",", " ", "1", ",", " ", "nx"}], "}"}], ",", " ", 
+       RowBox[{"{", 
+        RowBox[{"j", ",", " ", "1", ",", " ", "ny"}], "}"}]}], "\n", "]"}]}], 
+    ";"}], "\n", "\n", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+     RowBox[{"Electric", " ", "Field", " ", "Basis", " ", 
+      RowBox[{"Components", ":", " ", "E"}]}], " ", "=", " ", 
+     RowBox[{
+      RowBox[{"-", "grad"}], 
+      RowBox[{"(", "phi", ")"}]}]}], " ", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{"ExCharge", " ", "=", " ", 
+     RowBox[{"-", 
+      RowBox[{"gradX", "[", "phiCharge", "]"}]}]}], ";", " ", 
+    RowBox[{"EyCharge", " ", "=", " ", 
+     RowBox[{"-", 
+      RowBox[{"gradY", "[", "phiCharge", "]"}]}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"ExDrain", "  ", "=", " ", 
+     RowBox[{"-", 
+      RowBox[{"gradX", "[", "phiDrain", "]"}]}]}], ";", "  ", 
+    RowBox[{"EyDrain", "  ", "=", " ", 
+     RowBox[{"-", 
+      RowBox[{"gradY", "[", "phiDrain", "]"}]}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"ExFP", "     ", "=", " ", 
+     RowBox[{"-", 
+      RowBox[{"gradX", "[", "phiFP", "]"}]}]}], ";", "     ", 
+    RowBox[{"EyFP", "     ", "=", " ", 
+     RowBox[{"-", 
+      RowBox[{"gradY", "[", "phiFP", "]"}]}]}], ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{"Off", "[", 
+     RowBox[{"General", "::", "munfl"}], "]"}], ";"}], " ", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+     RowBox[{
+     "Suppress", " ", "machine", " ", "underflow", " ", "messages", " ", 
+      "for", " ", "small", " ", "E"}], "-", "fields"}], " ", "*)"}], "\n", 
+   "\n", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+    "Breakdown", " ", "Voltage", " ", "Calculator", " ", "for", " ", "given", 
+     " ", "Nd", " ", "and", " ", "V_FP"}], " ", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"calcVbd", "[", 
+      RowBox[{
+       RowBox[{"ndVal_", "?", "NumericQ"}], ",", " ", 
+       RowBox[{"vfpVal_", "?", "NumericQ"}]}], "]"}], " ", ":=", " ", 
+     RowBox[{"Module", "[", "\n", "  ", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+        "Ex0", ",", " ", "Ey0", ",", " ", "maxE", ",", " ", "ionInt", ",", 
+         " ", 
+         RowBox[{"vMin", " ", "=", " ", "0.0"}], ",", " ", 
+         RowBox[{"vMax", " ", "=", " ", "3000.0"}], ",", " ", 
+         RowBox[{"vbdEc", " ", "=", " ", "0.0"}], ",", " ", 
+         RowBox[{"vbdIon", " ", "=", " ", "0.0"}], ",", " ", "sol"}], "}"}], ",",
+        "\n", "  ", "\n", "  ", 
+       RowBox[{
+        RowBox[{"Ex0", " ", "=", " ", 
+         RowBox[{
+          RowBox[{"ndVal", " ", "*", " ", "ExCharge"}], " ", "+", " ", 
+          RowBox[{"vfpVal", " ", "*", " ", "ExFP"}]}]}], ";", "\n", "  ", 
+        RowBox[{"Ey0", " ", "=", " ", 
+         RowBox[{
+          RowBox[{"ndVal", " ", "*", " ", "EyCharge"}], " ", "+", " ", 
+          RowBox[{"vfpVal", " ", "*", " ", "EyFP"}]}]}], ";", "\n", "  ", 
+        "\n", "  ", 
+        RowBox[{"(*", " ", 
+         RowBox[{
+          RowBox[{"1.", " ", "Critical", " ", "Electric", " ", "Field", " ", 
+           RowBox[{"Criterion", ":", " ", 
+            RowBox[{"max", " ", "|", "E", "|"}]}]}], " ", "=", " ", "Ec"}], 
+         " ", "*)"}], "\n", "  ", 
+        RowBox[{
+         RowBox[{"maxE", "[", 
+          RowBox[{"vd_", "?", "NumericQ"}], "]"}], " ", ":=", " ", 
+         RowBox[{
+          RowBox[{"Max", "[", 
+           RowBox[{"Flatten", "[", 
+            RowBox[{"Sqrt", "[", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"(", 
+                RowBox[{"Ex0", " ", "+", " ", 
+                 RowBox[{"vd", " ", "*", " ", "ExDrain"}]}], ")"}], "^", 
+               "2"}], " ", "+", " ", 
+              RowBox[{
+               RowBox[{"(", 
+                RowBox[{"Ey0", " ", "+", " ", 
+                 RowBox[{"vd", " ", "*", " ", "EyDrain"}]}], ")"}], "^", 
+               "2"}]}], "]"}], "]"}], "]"}], " ", "-", " ", "EcSi"}]}], ";", 
+        "\n", "  ", "\n", "  ", 
+        RowBox[{"(*", " ", 
+         RowBox[{
+         "2.", " ", "Surface", " ", "Ionization", " ", "Integral", " ", 
+          "Criterion", " ", "along", " ", "oxide", " ", "interface", " ", 
+          RowBox[{"(", 
+           RowBox[{"j", " ", "=", " ", "ny"}], ")"}]}], " ", "*)"}], "\n", 
+        "  ", 
+        RowBox[{
+         RowBox[{"ionInt", "[", 
+          RowBox[{"vd_", "?", "NumericQ"}], "]"}], " ", ":=", " ", 
+         RowBox[{"Module", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"emagPath", ",", " ", "alpha", ",", " ", "trapz"}], "}"}],
+            ",", "\n", "    ", 
+           RowBox[{
+            RowBox[{"emagPath", " ", "=", " ", 
+             RowBox[{"Sqrt", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"(", 
+                 RowBox[{
+                  RowBox[{"Ex0", "[", 
+                   RowBox[{"[", 
+                    RowBox[{"All", ",", " ", "ny"}], "]"}], "]"}], " ", "+", 
+                  " ", 
+                  RowBox[{"vd", " ", "*", " ", 
+                   RowBox[{"ExDrain", "[", 
+                    RowBox[{"[", 
+                    RowBox[{"All", ",", " ", "ny"}], "]"}], "]"}]}]}], ")"}], 
+                "^", "2"}], " ", "+", " ", 
+               RowBox[{
+                RowBox[{"(", 
+                 RowBox[{
+                  RowBox[{"Ey0", "[", 
+                   RowBox[{"[", 
+                    RowBox[{"All", ",", " ", "ny"}], "]"}], "]"}], " ", "+", 
+                  " ", 
+                  RowBox[{"vd", " ", "*", " ", 
+                   RowBox[{"EyDrain", "[", 
+                    RowBox[{"[", 
+                    RowBox[{"All", ",", " ", "ny"}], "]"}], "]"}]}]}], ")"}], 
+                "^", "2"}]}], "]"}]}], ";", "\n", "    ", 
+            RowBox[{"alpha", " ", "=", " ", 
+             RowBox[{"aSi", " ", "*", " ", 
+              RowBox[{"Exp", "[", 
+               RowBox[{
+                RowBox[{"-", "bSi"}], " ", "/", " ", 
+                RowBox[{"Ramp", "[", 
+                 RowBox[{"emagPath", " ", "+", " ", 
+                  RowBox[{"10", "^", 
+                   RowBox[{"-", "10"}]}]}], "]"}]}], "]"}]}]}], ";", "\n", 
+            "    ", 
+            RowBox[{"trapz", " ", "=", " ", 
+             RowBox[{"dx", " ", "*", " ", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{"Total", "[", "alpha", "]"}], " ", "-", " ", 
+                RowBox[{"0.5", " ", "*", " ", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"First", "[", "alpha", "]"}], " ", "+", " ", 
+                   RowBox[{"Last", "[", "alpha", "]"}]}], ")"}]}]}], 
+               ")"}]}]}], ";", "\n", "    ", 
+            RowBox[{"trapz", " ", "-", " ", "1.0"}]}]}], "\n", "  ", "]"}]}], 
+        ";", "\n", "  ", "\n", "  ", 
+        RowBox[{"(*", " ", 
+         RowBox[{"Solve", " ", "for", " ", "Vbd", " ", 
+          RowBox[{"(", 
+           RowBox[{"Critical", " ", "Field"}], ")"}]}], " ", "*)"}], "\n", 
+        "  ", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{
+           RowBox[{
+            RowBox[{"maxE", "[", "vMin", "]"}], " ", "<=", " ", "0.0"}], " ", 
+           "&&", " ", 
+           RowBox[{
+            RowBox[{"maxE", "[", "vMax", "]"}], " ", ">=", " ", "0.0"}]}], ",",
+           "\n", "    ", 
+          RowBox[{
+           RowBox[{"sol", " ", "=", " ", 
+            RowBox[{"Quiet", "[", 
+             RowBox[{"FindRoot", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"maxE", "[", "v", "]"}], " ", "==", " ", "0.0"}], ",",
+                " ", 
+               RowBox[{"{", 
+                RowBox[{"v", ",", " ", "vMin", ",", " ", "vMax"}], "}"}], ",",
+                " ", 
+               RowBox[{"Method", " ", "->", " ", "\"\<Brent\>\""}]}], "]"}], 
+             "]"}]}], ";", "\n", "    ", 
+           RowBox[{"If", "[", 
+            RowBox[{
+             RowBox[{"MatchQ", "[", 
+              RowBox[{"sol", ",", " ", 
+               RowBox[{"{", "_Rule", "}"}]}], "]"}], ",", " ", 
+             RowBox[{"vbdEc", " ", "=", " ", 
+              RowBox[{"v", " ", "/.", " ", "sol"}]}]}], "]"}], ";"}]}], "\n", 
+         "  ", "]"}], ";", "\n", "  ", "\n", "  ", 
+        RowBox[{"(*", " ", 
+         RowBox[{"Solve", " ", "for", " ", "Vbd", " ", 
+          RowBox[{"(", 
+           RowBox[{"Ionization", " ", "Integral"}], ")"}]}], " ", "*)"}], 
+        "\n", "  ", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{
+           RowBox[{
+            RowBox[{"ionInt", "[", "vMin", "]"}], " ", "<=", " ", "0.0"}], 
+           " ", "&&", " ", 
+           RowBox[{
+            RowBox[{"ionInt", "[", "vMax", "]"}], " ", ">=", " ", "0.0"}]}], ",",
+           "\n", "    ", 
+          RowBox[{
+           RowBox[{"sol", " ", "=", " ", 
+            RowBox[{"Quiet", "[", 
+             RowBox[{"FindRoot", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"ionInt", "[", "v", "]"}], " ", "==", " ", "0.0"}], ",",
+                " ", 
+               RowBox[{"{", 
+                RowBox[{"v", ",", " ", "vMin", ",", " ", "vMax"}], "}"}], ",",
+                " ", 
+               RowBox[{"Method", " ", "->", " ", "\"\<Brent\>\""}]}], "]"}], 
+             "]"}]}], ";", "\n", "    ", 
+           RowBox[{"If", "[", 
+            RowBox[{
+             RowBox[{"MatchQ", "[", 
+              RowBox[{"sol", ",", " ", 
+               RowBox[{"{", "_Rule", "}"}]}], "]"}], ",", " ", 
+             RowBox[{"vbdIon", " ", "=", " ", 
+              RowBox[{"v", " ", "/.", " ", "sol"}]}]}], "]"}], ";"}]}], "\n", 
+         "  ", "]"}], ";", "\n", "  ", "\n", "  ", 
+        RowBox[{"{", 
+         RowBox[{"vbdEc", ",", " ", "vbdIon"}], "}"}]}]}], "\n", "]"}]}], 
+    ";"}]}]}]], "Input",ExpressionUUID->"2bf79b11-9ab9-b245-8d9b-\
+67f71c409949"],
+
+Cell["5. Simulation Sweep Across Doping Concentration Nd", "Section",
+ FontFamily->"Helvetica",
+ FontSize->17,
+ FontColor->RGBColor[
+  0.118, 0.494, 0.204],ExpressionUUID->"ff861618-87ee-ba4c-93f5-16b65417b39a"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", 
+   RowBox[{"Log", "-", 
+    RowBox[{"spaced", " ", "doping", " ", "range", " ", "from", " ", 
+     RowBox[{"10", "^", "14"}], " ", "to", " ", 
+     RowBox[{"10", "^", "17"}], " ", 
+     RowBox[{"cm", "^", 
+      RowBox[{"-", "3"}]}]}]}], " ", "*)"}], "\n", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"ndVals", " ", "=", " ", 
+     RowBox[{"10", "^", 
+      RowBox[{"Range", "[", 
+       RowBox[{"14.0", ",", " ", "17.0", ",", " ", 
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{"17.0", " ", "-", " ", "14.0"}], ")"}], "/", "19"}]}], 
+       "]"}]}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"vfpCases", " ", "=", " ", 
+     RowBox[{"{", 
+      RowBox[{"0.0", ",", " ", 
+       RowBox[{"-", "10.0"}], ",", " ", "10.0"}], "}"}]}], ";"}], "\n", "\n", 
+   
+   RowBox[{
+    RowBox[{
+    "Print", "[", "\"\<Executing Breakdown Voltage Sweep across Nd and \
+V_FP...\>\"", "]"}], ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{"resultsData", " ", "=", " ", 
+     RowBox[{"Table", "[", "\n", "  ", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"Print", "[", 
+         RowBox[{"\"\<Evaluating case V_FP = \>\"", ",", " ", "vfp", ",", 
+          " ", "\"\< V...\>\""}], "]"}], ";", "\n", "  ", 
+        RowBox[{"Table", "[", "\n", "    ", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"vbd", " ", "=", " ", 
+            RowBox[{"calcVbd", "[", 
+             RowBox[{"nd", ",", " ", "vfp"}], "]"}]}], ";", "\n", "    ", 
+           RowBox[{"{", 
+            RowBox[{"nd", ",", " ", 
+             RowBox[{"vbd", "[", 
+              RowBox[{"[", "1", "]"}], "]"}], ",", " ", 
+             RowBox[{"vbd", "[", 
+              RowBox[{"[", "2", "]"}], "]"}]}], "}"}]}], ",", "\n", "    ", 
+          RowBox[{"{", 
+           RowBox[{"nd", ",", " ", "ndVals"}], "}"}]}], "\n", "  ", "]"}]}], ",",
+        "\n", "  ", 
+       RowBox[{"{", 
+        RowBox[{"vfp", ",", " ", "vfpCases"}], "}"}]}], "\n", "]"}]}], ";"}], 
+   "\n", "\n", 
+   RowBox[{
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<Sweep completed! Extracted data for \>\"", ",", " ", 
+      RowBox[{"Length", "[", "ndVals", "]"}], ",", 
+      " ", "\"\< doping points across \>\"", ",", " ", 
+      RowBox[{"Length", "[", "vfpCases", "]"}], ",", 
+      " ", "\"\< field plate potentials.\>\""}], "]"}], ";"}]}]}]], "Input",Ex\
+pressionUUID->"58adac65-48de-354a-9685-7a3914ff2895"],
+
+Cell["6. Publication-Quality Plots of Vbd vs. Nd", "Section",
+ FontFamily->"Helvetica",
+ FontSize->17,
+ FontColor->RGBColor[
+  0.118, 0.494, 0.204],ExpressionUUID->"77b4182f-32b1-5b42-b6b2-2673f71ab1d2"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", 
+   RowBox[{
+   "Format", " ", "Data", " ", "Series", " ", "for", " ", 
+    "ListLogLinearPlot"}], " ", "*)"}], "\n", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"ptsEc0", "   ", "=", " ", 
+     RowBox[{"Table", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"pt", "[", 
+          RowBox[{"[", "1", "]"}], "]"}], ",", " ", 
+         RowBox[{"pt", "[", 
+          RowBox[{"[", "2", "]"}], "]"}]}], "}"}], ",", " ", 
+       RowBox[{"{", 
+        RowBox[{"pt", ",", " ", 
+         RowBox[{"resultsData", "[", 
+          RowBox[{"[", "1", "]"}], "]"}]}], "}"}]}], "]"}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"ptsIon0", "  ", "=", " ", 
+     RowBox[{"Table", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"pt", "[", 
+          RowBox[{"[", "1", "]"}], "]"}], ",", " ", 
+         RowBox[{"pt", "[", 
+          RowBox[{"[", "3", "]"}], "]"}]}], "}"}], ",", " ", 
+       RowBox[{"{", 
+        RowBox[{"pt", ",", " ", 
+         RowBox[{"resultsData", "[", 
+          RowBox[{"[", "1", "]"}], "]"}]}], "}"}]}], "]"}]}], ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{"ptsEcNeg", " ", "=", " ", 
+     RowBox[{"Table", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"pt", "[", 
+          RowBox[{"[", "1", "]"}], "]"}], ",", " ", 
+         RowBox[{"pt", "[", 
+          RowBox[{"[", "2", "]"}], "]"}]}], "}"}], ",", " ", 
+       RowBox[{"{", 
+        RowBox[{"pt", ",", " ", 
+         RowBox[{"resultsData", "[", 
+          RowBox[{"[", "2", "]"}], "]"}]}], "}"}]}], "]"}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"ptsIonNeg", "=", " ", 
+     RowBox[{"Table", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"pt", "[", 
+          RowBox[{"[", "1", "]"}], "]"}], ",", " ", 
+         RowBox[{"pt", "[", 
+          RowBox[{"[", "3", "]"}], "]"}]}], "}"}], ",", " ", 
+       RowBox[{"{", 
+        RowBox[{"pt", ",", " ", 
+         RowBox[{"resultsData", "[", 
+          RowBox[{"[", "2", "]"}], "]"}]}], "}"}]}], "]"}]}], ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{"ptsEcPos", " ", "=", " ", 
+     RowBox[{"Table", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"pt", "[", 
+          RowBox[{"[", "1", "]"}], "]"}], ",", " ", 
+         RowBox[{"pt", "[", 
+          RowBox[{"[", "2", "]"}], "]"}]}], "}"}], ",", " ", 
+       RowBox[{"{", 
+        RowBox[{"pt", ",", " ", 
+         RowBox[{"resultsData", "[", 
+          RowBox[{"[", "3", "]"}], "]"}]}], "}"}]}], "]"}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"ptsIonPos", "=", " ", 
+     RowBox[{"Table", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"pt", "[", 
+          RowBox[{"[", "1", "]"}], "]"}], ",", " ", 
+         RowBox[{"pt", "[", 
+          RowBox[{"[", "3", "]"}], "]"}]}], "}"}], ",", " ", 
+       RowBox[{"{", 
+        RowBox[{"pt", ",", " ", 
+         RowBox[{"resultsData", "[", 
+          RowBox[{"[", "3", "]"}], "]"}]}], "}"}]}], "]"}]}], ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{"plotEc", " ", "=", " ", 
+     RowBox[{"ListLogLinearPlot", "[", "\n", "  ", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"ptsEc0", ",", " ", "ptsEcNeg", ",", " ", "ptsEcPos"}], "}"}],
+        ",", "\n", "  ", 
+       RowBox[{"PlotStyle", " ", "->", " ", 
+        RowBox[{"{", "\n", "    ", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"colDeepGreen", ",", " ", 
+            RowBox[{"Thickness", "[", "0.005", "]"}]}], "}"}], ",", "\n", 
+          "    ", 
+          RowBox[{"{", 
+           RowBox[{"colPlum", ",", " ", 
+            RowBox[{"Thickness", "[", "0.005", "]"}]}], "}"}], ",", "\n", 
+          "    ", 
+          RowBox[{"{", 
+           RowBox[{"colVibrantPink", ",", " ", 
+            RowBox[{"Thickness", "[", "0.005", "]"}]}], "}"}]}], "\n", "  ", 
+         "}"}]}], ",", "\n", "  ", 
+       RowBox[{"PlotMarkers", " ", "->", " ", 
+        RowBox[{"{", "\n", "    ", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"Graphics", "[", 
+             RowBox[{"{", 
+              RowBox[{"colDeepGreen", ",", " ", 
+               RowBox[{"Disk", "[", "]"}]}], "}"}], "]"}], ",", " ", "0.02"}],
+            "}"}], ",", "\n", "    ", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"Graphics", "[", 
+             RowBox[{"{", 
+              RowBox[{"colPlum", ",", " ", 
+               RowBox[{"Disk", "[", "]"}]}], "}"}], "]"}], ",", " ", "0.02"}],
+            "}"}], ",", "\n", "    ", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"Graphics", "[", 
+             RowBox[{"{", 
+              RowBox[{"colVibrantPink", ",", " ", 
+               RowBox[{"Disk", "[", "]"}]}], "}"}], "]"}], ",", " ", "0.02"}],
+            "}"}]}], "\n", "  ", "}"}]}], ",", "\n", "  ", 
+       RowBox[{"PlotLegends", " ", "->", " ", 
+        RowBox[{"Placed", "[", "\n", "    ", 
+         RowBox[{
+          RowBox[{"PointLegend", "[", "\n", "      ", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{
+             "colDeepGreen", ",", " ", "colPlum", ",", " ", 
+              "colVibrantPink"}], "}"}], ",", "\n", "      ", 
+            RowBox[{"{", 
+             
+             RowBox[{"\"\<V_FP = 0 V\>\"", ",", " ", "\"\<V_FP = -10 V\>\"", ",",
+               " ", "\"\<V_FP = +10 V\>\""}], "}"}], ",", "\n", "      ", 
+            RowBox[{"LegendFunction", " ", "->", " ", 
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{"Framed", "[", 
+                RowBox[{"#", ",", " ", 
+                 RowBox[{"RoundingRadius", " ", "->", " ", "4"}], ",", " ", 
+                 RowBox[{"Background", " ", "->", " ", "White"}]}], "]"}], 
+               "&"}], ")"}]}]}], "\n", "    ", "]"}], ",", "\n", "    ", 
+          RowBox[{"{", 
+           RowBox[{"0.75", ",", " ", "0.78"}], "}"}]}], "\n", "  ", "]"}]}], ",",
+        "\n", "  ", 
+       RowBox[{"Frame", " ", "->", " ", "True"}], ",", "\n", "  ", 
+       RowBox[{"FrameLabel", " ", "->", " ", 
+        RowBox[{"{", "\n", "    ", 
+         RowBox[{
+          RowBox[{"Style", "[", 
+           
+           RowBox[{"\"\<Doping Concentration Nd (cm^-3)\>\"", ",", " ", "12", 
+            ",", " ", "Bold", ",", " ", 
+            RowBox[{"FontFamily", " ", "->", " ", "\"\<Helvetica\>\""}]}], 
+           "]"}], ",", "\n", "    ", 
+          RowBox[{"Style", "[", 
+           
+           RowBox[{"\"\<Breakdown Voltage V_bd (V)\>\"", ",", " ", "12", ",", 
+            " ", "Bold", ",", " ", 
+            RowBox[{"FontFamily", " ", "->", " ", "\"\<Helvetica\>\""}]}], 
+           "]"}]}], "\n", "  ", "}"}]}], ",", "\n", "  ", 
+       RowBox[{"PlotLabel", " ", "->", " ", 
+        RowBox[{"Style", "[", 
+         RowBox[{"\"\<Critical Field Criterion (Ec = 3e5 V/cm)\>\"", ",", " ",
+           "14", ",", " ", "Bold", ",", " ", "colForest"}], "]"}]}], ",", 
+       "\n", "  ", 
+       RowBox[{"PlotRange", " ", "->", " ", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"10", "^", "14"}], ",", " ", 
+            RowBox[{"10", "^", "17"}]}], "}"}], ",", " ", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"-", "0.5"}], ",", " ", "16.0"}], "}"}]}], "}"}]}], ",", 
+       "\n", "  ", 
+       RowBox[{"GridLines", " ", "->", " ", "Automatic"}], ",", "\n", "  ", 
+       RowBox[{"GridLinesStyle", " ", "->", " ", 
+        RowBox[{"Directive", "[", 
+         RowBox[{
+          RowBox[{"GrayLevel", "[", "0.85", "]"}], ",", " ", "Dashed"}], 
+         "]"}]}], ",", "\n", "  ", 
+       RowBox[{"ImageSize", " ", "->", " ", "520"}]}], "\n", "]"}]}], ";"}], 
+   "\n", "\n", 
+   RowBox[{
+    RowBox[{"plotIon", " ", "=", " ", 
+     RowBox[{"ListLogLinearPlot", "[", "\n", "  ", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"ptsIon0", ",", " ", "ptsIonNeg", ",", " ", "ptsIonPos"}], 
+        "}"}], ",", "\n", "  ", 
+       RowBox[{"PlotStyle", " ", "->", " ", 
+        RowBox[{"{", "\n", "    ", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"colDeepGreen", ",", " ", 
+            RowBox[{"Thickness", "[", "0.005", "]"}]}], "}"}], ",", "\n", 
+          "    ", 
+          RowBox[{"{", 
+           RowBox[{"colPlum", ",", " ", 
+            RowBox[{"Thickness", "[", "0.005", "]"}]}], "}"}], ",", "\n", 
+          "    ", 
+          RowBox[{"{", 
+           RowBox[{"colVibrantPink", ",", " ", 
+            RowBox[{"Thickness", "[", "0.005", "]"}]}], "}"}]}], "\n", "  ", 
+         "}"}]}], ",", "\n", "  ", 
+       RowBox[{"PlotMarkers", " ", "->", " ", 
+        RowBox[{"{", "\n", "    ", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"Graphics", "[", 
+             RowBox[{"{", 
+              RowBox[{"colDeepGreen", ",", " ", 
+               RowBox[{"Rectangle", "[", "]"}]}], "}"}], "]"}], ",", " ", 
+            "0.02"}], "}"}], ",", "\n", "    ", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"Graphics", "[", 
+             RowBox[{"{", 
+              RowBox[{"colPlum", ",", " ", 
+               RowBox[{"Rectangle", "[", "]"}]}], "}"}], "]"}], ",", " ", 
+            "0.02"}], "}"}], ",", "\n", "    ", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"Graphics", "[", 
+             RowBox[{"{", 
+              RowBox[{"colVibrantPink", ",", " ", 
+               RowBox[{"Rectangle", "[", "]"}]}], "}"}], "]"}], ",", " ", 
+            "0.02"}], "}"}]}], "\n", "  ", "}"}]}], ",", "\n", "  ", 
+       RowBox[{"PlotLegends", " ", "->", " ", 
+        RowBox[{"Placed", "[", "\n", "    ", 
+         RowBox[{
+          RowBox[{"PointLegend", "[", "\n", "      ", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{
+             "colDeepGreen", ",", " ", "colPlum", ",", " ", 
+              "colVibrantPink"}], "}"}], ",", "\n", "      ", 
+            RowBox[{"{", 
+             
+             RowBox[{"\"\<V_FP = 0 V\>\"", ",", " ", "\"\<V_FP = -10 V\>\"", ",",
+               " ", "\"\<V_FP = +10 V\>\""}], "}"}], ",", "\n", "      ", 
+            RowBox[{"LegendFunction", " ", "->", " ", 
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{"Framed", "[", 
+                RowBox[{"#", ",", " ", 
+                 RowBox[{"RoundingRadius", " ", "->", " ", "4"}], ",", " ", 
+                 RowBox[{"Background", " ", "->", " ", "White"}]}], "]"}], 
+               "&"}], ")"}]}]}], "\n", "    ", "]"}], ",", "\n", "    ", 
+          RowBox[{"{", 
+           RowBox[{"0.75", ",", " ", "0.78"}], "}"}]}], "\n", "  ", "]"}]}], ",",
+        "\n", "  ", 
+       RowBox[{"Frame", " ", "->", " ", "True"}], ",", "\n", "  ", 
+       RowBox[{"FrameLabel", " ", "->", " ", 
+        RowBox[{"{", "\n", "    ", 
+         RowBox[{
+          RowBox[{"Style", "[", 
+           
+           RowBox[{"\"\<Doping Concentration Nd (cm^-3)\>\"", ",", " ", "12", 
+            ",", " ", "Bold", ",", " ", 
+            RowBox[{"FontFamily", " ", "->", " ", "\"\<Helvetica\>\""}]}], 
+           "]"}], ",", "\n", "    ", 
+          RowBox[{"Style", "[", 
+           
+           RowBox[{"\"\<Breakdown Voltage V_bd (V)\>\"", ",", " ", "12", ",", 
+            " ", "Bold", ",", " ", 
+            RowBox[{"FontFamily", " ", "->", " ", "\"\<Helvetica\>\""}]}], 
+           "]"}]}], "\n", "  ", "}"}]}], ",", "\n", "  ", 
+       RowBox[{"PlotLabel", " ", "->", " ", 
+        RowBox[{"Style", "[", 
+         RowBox[{"\"\<Surface Ionization Integral Criterion (\[Integral] \
+\[Alpha] dx = 1)\>\"", ",", " ", "14", ",", " ", "Bold", ",", " ", 
+          "colForest"}], "]"}]}], ",", "\n", "  ", 
+       RowBox[{"PlotRange", " ", "->", " ", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"10", "^", "14"}], ",", " ", 
+            RowBox[{"10", "^", "17"}]}], "}"}], ",", " ", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"-", "1.0"}], ",", " ", "32.0"}], "}"}]}], "}"}]}], ",", 
+       "\n", "  ", 
+       RowBox[{"GridLines", " ", "->", " ", "Automatic"}], ",", "\n", "  ", 
+       RowBox[{"GridLinesStyle", " ", "->", " ", 
+        RowBox[{"Directive", "[", 
+         RowBox[{
+          RowBox[{"GrayLevel", "[", "0.85", "]"}], ",", " ", "Dashed"}], 
+         "]"}]}], ",", "\n", "  ", 
+       RowBox[{"ImageSize", " ", "->", " ", "520"}]}], "\n", "]"}]}], ";"}], 
+   "\n", "\n", 
+   RowBox[{"GraphicsRow", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"plotEc", ",", " ", "plotIon"}], "}"}], ",", " ", 
+     RowBox[{"ImageSize", " ", "->", " ", "1060"}]}], "]"}]}]}]], "Input",Expr\
+essionUUID->"81e1edcd-5109-5141-8b52-3a8d0e37480f"],
+
+Cell["7. Formatted Quantitative Summary Table", "Section",
+ FontFamily->"Helvetica",
+ FontSize->17,
+ FontColor->RGBColor[
+  0.118, 0.494, 0.204],ExpressionUUID->"105b8fce-342f-a747-b1d3-23dea5fc8287"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", 
+   RowBox[{
+   "Format", " ", "and", " ", "display", " ", "numerical", " ", "breakdown", " ",
+     "voltages"}], " ", "*)"}], "\n", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"header", " ", "=", " ", 
+     RowBox[{"{", 
+      RowBox[{"\"\<Nd [cm^-3]\>\"", ",", " ", "\"\<Ec (0 V)\>\"", ",", 
+       " ", "\"\<Ion (0 V)\>\"", ",", " ", "\"\<Ec (-10 V)\>\"", ",", 
+       " ", "\"\<Ion (-10 V)\>\"", ",", " ", "\"\<Ec (+10 V)\>\"", ",", 
+       " ", "\"\<Ion (+10 V)\>\""}], "}"}]}], ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{"tableRows", " ", "=", " ", 
+     RowBox[{"Table", "[", "\n", "  ", 
+      RowBox[{
+       RowBox[{"{", "\n", "    ", 
+        RowBox[{
+         RowBox[{"ScientificForm", "[", 
+          RowBox[{
+           RowBox[{"resultsData", "[", 
+            RowBox[{"[", 
+             RowBox[{"1", ",", " ", "i", ",", " ", "1"}], "]"}], "]"}], ",", 
+           " ", "3"}], "]"}], ",", "\n", "    ", 
+         RowBox[{"NumberForm", "[", 
+          RowBox[{
+           RowBox[{"resultsData", "[", 
+            RowBox[{"[", 
+             RowBox[{"1", ",", " ", "i", ",", " ", "2"}], "]"}], "]"}], ",", 
+           " ", 
+           RowBox[{"{", 
+            RowBox[{"5", ",", " ", "2"}], "}"}]}], "]"}], ",", "\n", "    ", 
+         RowBox[{"NumberForm", "[", 
+          RowBox[{
+           RowBox[{"resultsData", "[", 
+            RowBox[{"[", 
+             RowBox[{"1", ",", " ", "i", ",", " ", "3"}], "]"}], "]"}], ",", 
+           " ", 
+           RowBox[{"{", 
+            RowBox[{"5", ",", " ", "2"}], "}"}]}], "]"}], ",", "\n", "    ", 
+         RowBox[{"NumberForm", "[", 
+          RowBox[{
+           RowBox[{"resultsData", "[", 
+            RowBox[{"[", 
+             RowBox[{"2", ",", " ", "i", ",", " ", "2"}], "]"}], "]"}], ",", 
+           " ", 
+           RowBox[{"{", 
+            RowBox[{"5", ",", " ", "2"}], "}"}]}], "]"}], ",", "\n", "    ", 
+         RowBox[{"NumberForm", "[", 
+          RowBox[{
+           RowBox[{"resultsData", "[", 
+            RowBox[{"[", 
+             RowBox[{"2", ",", " ", "i", ",", " ", "3"}], "]"}], "]"}], ",", 
+           " ", 
+           RowBox[{"{", 
+            RowBox[{"5", ",", " ", "2"}], "}"}]}], "]"}], ",", "\n", "    ", 
+         RowBox[{"NumberForm", "[", 
+          RowBox[{
+           RowBox[{"resultsData", "[", 
+            RowBox[{"[", 
+             RowBox[{"3", ",", " ", "i", ",", " ", "2"}], "]"}], "]"}], ",", 
+           " ", 
+           RowBox[{"{", 
+            RowBox[{"5", ",", " ", "2"}], "}"}]}], "]"}], ",", "\n", "    ", 
+         RowBox[{"NumberForm", "[", 
+          RowBox[{
+           RowBox[{"resultsData", "[", 
+            RowBox[{"[", 
+             RowBox[{"3", ",", " ", "i", ",", " ", "3"}], "]"}], "]"}], ",", 
+           " ", 
+           RowBox[{"{", 
+            RowBox[{"5", ",", " ", "2"}], "}"}]}], "]"}]}], "\n", "  ", "}"}],
+        ",", "\n", "  ", 
+       RowBox[{"{", 
+        RowBox[{"i", ",", " ", "1", ",", " ", 
+         RowBox[{"Length", "[", "ndVals", "]"}], ",", " ", "3"}], "}"}]}], 
+      "\n", "]"}]}], ";"}], "\n", "\n", 
+   RowBox[{"TableForm", "[", 
+    RowBox[{
+     RowBox[{"Prepend", "[", 
+      RowBox[{"tableRows", ",", " ", "header"}], "]"}], ",", " ", 
+     RowBox[{"TableHeadings", " ", "->", " ", "None"}], ",", " ", 
+     RowBox[{"TableAlignments", " ", "->", " ", "Center"}]}], 
+    "]"}]}]}]], "Input",ExpressionUUID->"360fdea0-5645-204c-b8a8-\
+a9d5254068e4"],
+
+Cell["8. Interactive 2D Potential and Field Visualizer", "Section",
+ FontFamily->"Helvetica",
+ FontSize->17,
+ FontColor->RGBColor[
+  0.118, 0.494, 0.204],ExpressionUUID->"7f255ebc-f693-894b-a59d-087ae8b894aa"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", 
+   RowBox[{
+   "Interactive", " ", "2", "D", " ", "Contour", " ", "and", " ", 
+    "Streamline", " ", "Explorer"}], " ", "*)"}], "\n", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"xCoords", " ", "=", " ", 
+     RowBox[{
+      RowBox[{"Range", "[", 
+       RowBox[{"0", ",", " ", "L", ",", " ", "dx"}], "]"}], " ", "/", " ", 
+      "um"}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"yCoords", " ", "=", " ", 
+     RowBox[{
+      RowBox[{"Range", "[", 
+       RowBox[{"0", ",", " ", "a", ",", " ", "dy"}], "]"}], " ", "/", " ", 
+      "um"}]}], ";"}], "\n", "\n", 
+   RowBox[{"Manipulate", "[", "\n", "  ", 
+    RowBox[{
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+        "ExTot", ",", " ", "EyTot", ",", " ", "phiTot", ",", " ", 
+         "emagGrid"}], "}"}], ",", "\n", "    ", 
+       RowBox[{
+        RowBox[{"phiTot", " ", "=", " ", 
+         RowBox[{
+          RowBox[{"ndSelect", " ", "*", " ", "phiCharge"}], " ", "+", " ", 
+          RowBox[{"vfpSelect", " ", "*", " ", "phiFP"}], " ", "+", " ", 
+          RowBox[{"vdSelect", " ", "*", " ", "phiDrain"}]}]}], ";", "\n", 
+        "    ", 
+        RowBox[{"ExTot", " ", "=", " ", 
+         RowBox[{
+          RowBox[{"ndSelect", " ", "*", " ", "ExCharge"}], " ", "+", " ", 
+          RowBox[{"vfpSelect", " ", "*", " ", "ExFP"}], " ", "+", " ", 
+          RowBox[{"vdSelect", " ", "*", " ", "ExDrain"}]}]}], ";", "\n", 
+        "    ", 
+        RowBox[{"EyTot", " ", "=", " ", 
+         RowBox[{
+          RowBox[{"ndSelect", " ", "*", " ", "EyCharge"}], " ", "+", " ", 
+          RowBox[{"vfpSelect", " ", "*", " ", "EyFP"}], " ", "+", " ", 
+          RowBox[{"vdSelect", " ", "*", " ", "EyDrain"}]}]}], ";", "\n", 
+        "    ", 
+        RowBox[{"emagGrid", " ", "=", " ", 
+         RowBox[{"Sqrt", "[", 
+          RowBox[{
+           RowBox[{"ExTot", "^", "2"}], " ", "+", " ", 
+           RowBox[{"EyTot", "^", "2"}]}], "]"}]}], ";", "\n", "    ", "\n", 
+        "    ", 
+        RowBox[{"ListContourPlot", "[", "\n", "      ", 
+         RowBox[{
+          RowBox[{"Transpose", "[", "phiTot", "]"}], ",", "\n", "      ", 
+          RowBox[{"DataRange", " ", "->", " ", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{"0", ",", " ", 
+               RowBox[{"L", "/", "um"}]}], "}"}], ",", " ", 
+             RowBox[{"{", 
+              RowBox[{"0", ",", " ", 
+               RowBox[{"a", "/", "um"}]}], "}"}]}], "}"}]}], ",", "\n", 
+          "      ", 
+          RowBox[{"ColorFunction", " ", "->", " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"greenPinkCol", "[", "#", "]"}], "&"}], ")"}]}], ",", 
+          "\n", "      ", 
+          RowBox[{"ColorFunctionScaling", " ", "->", " ", "True"}], ",", "\n",
+           "      ", 
+          RowBox[{"Contours", " ", "->", " ", "20"}], ",", "\n", "      ", 
+          RowBox[{"ContourLabels", " ", "->", " ", "Automatic"}], ",", "\n", 
+          "      ", 
+          RowBox[{"Frame", " ", "->", " ", "True"}], ",", "\n", "      ", 
+          RowBox[{"FrameLabel", " ", "->", " ", 
+           RowBox[{"{", 
+            
+            RowBox[{"\"\<Drift Position x [\[Mu]m]\>\"", ",", 
+             " ", "\"\<Mesa Depth y [\[Mu]m]\>\""}], "}"}]}], ",", "\n", 
+          "      ", 
+          RowBox[{"PlotLabel", " ", "->", " ", 
+           RowBox[{"Style", "[", "\n", "        ", 
+            RowBox[{
+             RowBox[{"StringForm", "[", 
+              
+              RowBox[{"\"\<Electrostatic Potential \[Phi](x, y) [V]  (Peak \
+|E| = `` V/cm)\>\"", ",", " ", "\n", "          ", 
+               RowBox[{"ScientificForm", "[", 
+                RowBox[{
+                 RowBox[{"Max", "[", "emagGrid", "]"}], ",", " ", "3"}], 
+                "]"}]}], "]"}], ",", "\n", "        ", "12", ",", " ", "Bold",
+              ",", " ", "colForest"}], "\n", "      ", "]"}]}], ",", "\n", 
+          "      ", 
+          RowBox[{"PlotLegends", " ", "->", " ", "Automatic"}], ",", "\n", 
+          "      ", 
+          RowBox[{"ImageSize", " ", "->", " ", "600"}]}], "\n", "    ", 
+         "]"}]}]}], "\n", "  ", "]"}], ",", "\n", "  ", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+        "ndSelect", ",", " ", "1.0*^15", ",", 
+         " ", "\"\<Doping Concentration Nd [cm^-3]\>\""}], "}"}], ",", " ", 
+       "1.0*^14", ",", " ", "1.0*^17", ",", " ", "1.0*^15", ",", " ", 
+       RowBox[{"Appearance", " ", "->", " ", "\"\<Labeled\>\""}]}], "}"}], ",",
+      "\n", "  ", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+        "vfpSelect", ",", " ", "0.0", ",", 
+         " ", "\"\<Field Plate Potential V_FP [V]\>\""}], "}"}], ",", " ", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"-", "10.0"}], ",", " ", "0.0", ",", " ", "10.0"}], "}"}], ",",
+        " ", 
+       RowBox[{"ControlType", " ", "->", " ", "SetterBar"}]}], "}"}], ",", 
+     "\n", "  ", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+        "vdSelect", ",", " ", "25.0", ",", 
+         " ", "\"\<Applied Drain Voltage V_drain [V]\>\""}], "}"}], ",", " ", 
+       "0.0", ",", " ", "50.0", ",", " ", "1.0", ",", " ", 
+       RowBox[{"Appearance", " ", "->", " ", "\"\<Labeled\>\""}]}], "}"}], ",",
+      "\n", "  ", 
+     RowBox[{"SaveDefinitions", " ", "->", " ", "True"}]}], "\n", 
+    "]"}]}]}]], "Input",ExpressionUUID->"0a02199b-9eb4-1949-adff-\
+f718b1df6573"]
+},
+Saveable->True,
+FrontEndVersion->"15.0 for Microsoft Windows (64-bit) (May 19, 2026)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"44f5b1d0-f4ca-b24f-acac-47889750d6fc"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[1460, 33, 234, 6, 70, "Title",ExpressionUUID->"8e6c92f2-a116-3843-8241-5df5584b533c"],
+Cell[1691, 41, 411, 10, 70, "Subtitle",ExpressionUUID->"d5d4d2b8-d9d9-4c46-8fc6-c71af3850ff2"],
+Cell[2095, 53, 237, 6, 70, "Section",ExpressionUUID->"5e0d88a9-cc25-8b4f-a489-632c8915490e"],
+Cell[2329, 61, 5304, 130, 70, "Input",ExpressionUUID->"8dd1a15d-d0db-8940-90d8-a9801435ba6e"],
+Cell[7506, 193, 201, 4, 70, "Section",ExpressionUUID->"fc61f7c7-1a5c-7a4c-84d5-fbb5212c74e9"],
+Cell[7706, 199, 3759, 95, 70, "Input",ExpressionUUID->"14144caa-3c40-2345-b956-96779afe8d43"],
+Cell[11373, 296, 211, 4, 70, "Section",ExpressionUUID->"1945df26-a577-fc4e-840a-146937a41bd7"],
+Cell[11583, 302, 11627, 285, 70, "Input",ExpressionUUID->"c6b69d57-7a78-9743-85a1-1ee808c0ed9d"],
+Cell[22928, 589, 215, 4, 70, "Section",ExpressionUUID->"debb227e-29f3-144c-90b0-1e83c18ef50e"],
+Cell[23142, 595, 13888, 342, 70, "Input",ExpressionUUID->"2bf79b11-9ab9-b245-8d9b-67f71c409949"],
+Cell[36691, 939, 215, 4, 70, "Section",ExpressionUUID->"ff861618-87ee-ba4c-93f5-16b65417b39a"],
+Cell[36905, 945, 2444, 62, 70, "Input",ExpressionUUID->"58adac65-48de-354a-9685-7a3914ff2895"],
+Cell[39290, 1009, 207, 4, 70, "Section",ExpressionUUID->"77b4182f-32b1-5b42-b6b2-2673f71ab1d2"],
+Cell[39496, 1015, 12943, 316, 70, "Input",ExpressionUUID->"81e1edcd-5109-5141-8b52-3a8d0e37480f"],
+Cell[52126, 1333, 204, 4, 70, "Section",ExpressionUUID->"105b8fce-342f-a747-b1d3-23dea5fc8287"],
+Cell[52329, 1339, 3524, 86, 70, "Input",ExpressionUUID->"360fdea0-5645-204c-b8a8-a9d5254068e4"],
+Cell[55770, 1427, 213, 4, 70, "Section",ExpressionUUID->"7f255ebc-f693-894b-a59d-087ae8b894aa"],
+Cell[55982, 1433, 5608, 131, 70, "Input",ExpressionUUID->"0a02199b-9eb4-1949-adff-f718b1df6573"]
+}
+]
+*)
+
+(* End of internal cache information *)
