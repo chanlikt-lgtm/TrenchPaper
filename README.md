@@ -31,6 +31,7 @@ problem with a Robin (oxide/field-plate) boundary.
 | `fp_sweep.py` | centerline depletion depth vs N_D for field-plate potential V_FP = -60..+60 V |
 | `interface_charge.py` | V_BD vs N_D with signed Si/oxide interface charge |
 | `use_predictor.py` | fast V_BD estimates via the surrogate in `vbd_regression_package/` |
+| `our_surrogate.py` | applies the package's regression concept (poly + thin-plate-spline) to OUR moving-boundary model, covering partial depletion (R2=0.997, RMSE 1.4 V) |
 
 ## vbd_regression_package/
 
