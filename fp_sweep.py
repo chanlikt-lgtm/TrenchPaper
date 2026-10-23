@@ -51,36 +51,37 @@ def build_operator_split(nx, ny, L, a, b):
     A = sp.csr_matrix((vals, (rows, cols)), shape=(N, N))
     return A, r_top, r_wall, dx, dy
 
-a, tox, L = 0.9*um, 0.4*um, 3.0*um
-b = (eps_s/eps_I)*tox
-nx, ny = 150, 50
-A, r_top, r_wall, dx, dy = build_operator_split(nx, ny, L, a, b)
+if __name__ == "__main__":
+    a, tox, L = 0.9*um, 0.4*um, 3.0*um
+    b = (eps_s/eps_I)*tox
+    nx, ny = 150, 50
+    A, r_top, r_wall, dx, dy = build_operator_split(nx, ny, L, a, b)
 
-V_drain = 40.0                                   # fixed applied drain bias
-VFP_list = [-60, -40, -20, 0, 20, 40, 60]
-Nd_list  = np.logspace(np.log10(2e15), np.log10(1e17), 55)
-cmap = plt.cm.coolwarm(np.linspace(0, 1, len(VFP_list)))
+    V_drain = 40.0                                   # fixed applied drain bias
+    VFP_list = [-60, -40, -20, 0, 20, 40, 60]
+    Nd_list  = np.logspace(np.log10(2e15), np.log10(1e17), 55)
+    cmap = plt.cm.coolwarm(np.linspace(0, 1, len(VFP_list)))
 
-def Wcl_vs_Nd(VFP):
-    out = []
-    base = V_drain*(r_top + r_wall) - VFP*r_wall
-    for Nd in Nd_list:
-        k = qe*Nd/eps_s
-        u, Z = fb.solve_obstacle(A, base - k)
-        D = (~Z).reshape(nx, ny)
-        out.append(D[:, 0].sum() * dx / um)       # centerline depth (um)
-    return np.array(out)
+    def Wcl_vs_Nd(VFP):
+        out = []
+        base = V_drain*(r_top + r_wall) - VFP*r_wall
+        for Nd in Nd_list:
+            k = qe*Nd/eps_s
+            u, Z = fb.solve_obstacle(A, base - k)
+            D = (~Z).reshape(nx, ny)
+            out.append(D[:, 0].sum() * dx / um)       # centerline depth (um)
+        return np.array(out)
 
-fig, ax = plt.subplots(figsize=(9, 6))
-for VFP, col in zip(VFP_list, cmap):
-    W = Wcl_vs_Nd(VFP)
-    ax.semilogx(Nd_list, W, color=col, lw=2.0, label=f"{VFP:+d} V")
-    print(f"VFP={VFP:+4d} V:  Wcl(1e17)={W[-1]:.2f} um")
-ax.axhline(L/um, ls=":", color="0.6")
-ax.set_xlabel(r"Nd (cm$^{-3}$)"); ax.set_ylabel("Centerline depletion depth (um)")
-ax.set_title(f"Depletion depth vs donor concentration\n"
-             f"field-plate sweep, drain bias V={V_drain:.0f} V, a=0.9, tox=0.4, L=3 um")
-ax.set_ylim(0, 3.1); ax.grid(True, which="both", alpha=0.3)
-ax.legend(title=r"$V_{FP}$", loc="lower left")
-fig.tight_layout(); fig.savefig("fp_sweep.png", dpi=140)
-print("saved fp_sweep.png")
+    fig, ax = plt.subplots(figsize=(9, 6))
+    for VFP, col in zip(VFP_list, cmap):
+        W = Wcl_vs_Nd(VFP)
+        ax.semilogx(Nd_list, W, color=col, lw=2.0, label=f"{VFP:+d} V")
+        print(f"VFP={VFP:+4d} V:  Wcl(1e17)={W[-1]:.2f} um")
+    ax.axhline(L/um, ls=":", color="0.6")
+    ax.set_xlabel(r"Nd (cm$^{-3}$)"); ax.set_ylabel("Centerline depletion depth (um)")
+    ax.set_title(f"Depletion depth vs donor concentration\n"
+                 f"field-plate sweep, drain bias V={V_drain:.0f} V, a=0.9, tox=0.4, L=3 um")
+    ax.set_ylim(0, 3.1); ax.grid(True, which="both", alpha=0.3)
+    ax.legend(title=r"$V_{FP}$", loc="lower left")
+    fig.tight_layout(); fig.savefig("fp_sweep.png", dpi=140)
+    print("saved fp_sweep.png")
