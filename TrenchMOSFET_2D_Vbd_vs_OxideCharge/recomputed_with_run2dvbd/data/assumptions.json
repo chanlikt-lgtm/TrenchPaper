@@ -1,0 +1,71 @@
+{
+  "description": "2D critical-field study of VBD versus uniform oxide/interface charge using the previously validated Green-function model",
+  "fixed_parameters": {
+    "Nd_cm3": 1e+16,
+    "Ec_MV_cm": 0.3,
+    "corner_exclusion_nm": 100,
+    "L_um": 1.25,
+    "a_um": 0.425,
+    "eps_si_rel": 11.7,
+    "eps_ox_rel": 3.9,
+    "mode_count": 420,
+    "grid_nx": 111,
+    "grid_ny": 47
+  },
+  "swept_parameters": {
+    "Nox_cm2_min": -1500000000000.0,
+    "Nox_cm2_max": 1500000000000.0,
+    "num_points": 121,
+    "tox_um": [
+      0.05,
+      0.1,
+      0.2
+    ],
+    "VFP_V": [
+      -10.0,
+      10.0
+    ]
+  },
+  "notes": [
+    "The domain uses the full 2D critical-field criterion, not the centerline-only criterion.",
+    "A 100 nm corner exclusion is used to avoid singular fields at ideal rectangular mixed-boundary corners.",
+    "NaN Vbd means the zero-drain field already reaches or exceeds Ec in the evaluated domain.",
+    "No fitting parameters are used."
+  ],
+  "summary": {
+    "-10.0": {
+      "0.05": {
+        "min_Vbd": 0.05617944204796889,
+        "max_Vbd": 1.1581929940185154,
+        "precritical_count": 101
+      },
+      "0.1": {
+        "min_Vbd": 0.06634375965101394,
+        "max_Vbd": 7.660713887337536,
+        "precritical_count": 53
+      },
+      "0.2": {
+        "min_Vbd": 0.16641186933036003,
+        "max_Vbd": 18.899156236762217,
+        "precritical_count": 31
+      }
+    },
+    "10.0": {
+      "0.05": {
+        "min_Vbd": 1.3250841677735863,
+        "max_Vbd": 14.685253144223273,
+        "precritical_count": 102
+      },
+      "0.1": {
+        "min_Vbd": 0.16321991428260418,
+        "max_Vbd": 18.557716434469103,
+        "precritical_count": 61
+      },
+      "0.2": {
+        "min_Vbd": 1.0122134400161955,
+        "max_Vbd": 23.315470441808756,
+        "precritical_count": 44
+      }
+    }
+  }
+}

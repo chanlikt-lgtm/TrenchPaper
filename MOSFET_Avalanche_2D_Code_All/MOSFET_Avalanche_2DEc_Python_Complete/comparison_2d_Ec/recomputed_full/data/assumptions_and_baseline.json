@@ -1,0 +1,47 @@
+{
+  "model": "fully depleted rectangular silicon + local Robin oxide; 2D Ec criterion",
+  "geometry": {
+    "L_um": 1.25,
+    "a_um": 0.425,
+    "eps_si_rel": 11.7,
+    "eps_ox_rel": 3.9
+  },
+  "assumptions": {
+    "Ec_MV_cm": 0.3,
+    "baseline_tox_um": 0.1,
+    "baseline_Vfp_V": 0,
+    "baseline_Nox_cm2": 0,
+    "corner_cutoffs_um": [
+      0.05,
+      0.1,
+      0.15
+    ],
+    "mode_count": 420,
+    "grid_nx": 111,
+    "grid_ny": 47,
+    "no_fitting": true,
+    "not_physical_rounded_corner": true
+  },
+  "baseline_Nd_1e16": {
+    "2D": {
+      "Vbd": 10.626668158479283,
+      "xcrit": 1.1477272727272727,
+      "ycrit": 0.425,
+      "already_critical": false,
+      "zero_bias_max_V_um": 6.6237173673707535,
+      "Veff": 0.0,
+      "k_V_um2": 15.465921521134897
+    },
+    "centerline": {
+      "Vbd": 22.301357092701643,
+      "xcrit": 1.1931818181818181,
+      "ycrit": 0.0,
+      "already_critical": false,
+      "zero_bias_max_V_um": 6.6237173673707535,
+      "Veff": 0.0,
+      "k_V_um2": 15.465921521134897
+    }
+  },
+  "units": "all fields internally V/um; 1 V/um=0.01 MV/cm",
+  "missing_values": "NaN means model is at/above Ec at zero drain voltage"
+}
