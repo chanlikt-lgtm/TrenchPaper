@@ -1,0 +1,34 @@
+{
+  "model": "degree 8 polynomial + local thin-plate-spline residual",
+  "reference_fig2_at_3e16_V": 47.60416943882644,
+  "training_count": 50589,
+  "training_valid_count": 33774,
+  "polynomial_degree": 8,
+  "polynomial_terms": 165,
+  "rbf_neighbors": 120,
+  "rbf_kernel": "thin_plate_spline",
+  "rbf_smoothing": 0.0001,
+  "four_input_holdout": {
+    "all_count": 900,
+    "valid_count": 612,
+    "invalid_count": 288,
+    "r2": 0.9999912894086838,
+    "rmse_V": 0.013320554611860847,
+    "mae_V": 0.0027360584605158637,
+    "p95_abs_error_V": 0.00729593266238133,
+    "max_abs_error_V": 0.31235463445155887
+  },
+  "effective_bias_stress_holdout": {
+    "all_count": 700,
+    "valid_count": 470,
+    "invalid_count": 230,
+    "r2": 0.999969482230984,
+    "rmse_V": 0.027616041155510147,
+    "mae_V": 0.004696024531328578,
+    "p95_abs_error_V": 0.010040305495287418,
+    "max_abs_error_V": 0.463244181421409
+  },
+  "fixed_a_um": 0.5,
+  "fixed_L_um": 1.6,
+  "caveat": "2D Green electrostatics + centerline avalanche; uniform full depletion and effective oxide boundary assumed."
+}
